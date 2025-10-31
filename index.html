@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Actividad Integradora - Psicología</title>
+    
+    <style>
+        /* --- Estilos Generales --- */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f0f2f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        /* --- Contenedor Principal del Carousel --- */
+        .carousel-container {
+            width: 100%;
+            max-width: 1000px; /* Ancho máximo de la presentación */
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden; /* Oculta las diapositivas no activas */
+            min-height: 600px; /* Altura mínima para acomodar contenido */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        /* --- Estilo de cada Diapositiva --- */
+        .slide {
+            display: none; /* Ocultas por defecto */
+            padding: 30px 40px;
+            box-sizing: border-box;
+            animation: fadeIn 0.6s ease-in-out;
+        }
+
+        /* --- Diapositiva Activa --- */
+        .slide.active {
+            display: flex; /* Se muestra la activa usando flexbox */
+            flex-wrap: wrap; /* Permite que el contenido se ajuste en pantallas pequeñas */
+            gap: 30px; /* Espacio entre contenido e imagen */
+            align-items: flex-start;
+        }
+
+        /* --- Contenido de Texto (izquierda) --- */
+        .slide-content {
+            flex: 2; /* Toma 2/3 del espacio */
+            min-width: 300px; /* Ancho mínimo antes de envolver */
+        }
+
+        .slide-content h2 {
+            font-size: 2.2rem;
+            color: #004a99; /* Azul institucional */
+            border-bottom: 3px solid #0056b3;
+            padding-bottom: 10px;
+            margin-top: 0;
+            margin-bottom: 20px;
+        }
+
+        .slide-content ul {
+            list-style-type: none;
+            padding-left: 0;
+        }
+
+        /* Estilos para cumplir la regla 7x7 */
+        .slide-content li {
+            font-size: 1.1rem;
+            line-height: 1.7; /* Más espacio para líneas cortas */
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .slide-content strong {
+            color: #004a99;
+        }
+
+        /* --- Placeholder de Imagen (derecha) --- */
+        .slide-image {
+            flex: 1; /* Toma 1/3 del espacio */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 300px;
+            height: 300px;
+            max-width: 100%;
+            background-color: #f0f0f0;
+            border: 2px dashed #ccc;
+            border-radius: 8px;
+            color: #888;
+            font-size: 1.1rem;
+            font-weight: bold;
+            text-align: center;
+            padding: 20px;
+            box-sizing: border-box;
+            margin: 20px auto 0; /* Centrado y con margen superior */
+        }
+        
+        /* Estilo para portada (centrada) */
+        .slide-portada .slide-content {
+            text-align: center;
+            width: 100%;
+            flex: 1 1 100%;
+        }
+         .slide-portada h2 {
+            font-size: 2.5rem;
+         }
+         .slide-portada ul {
+            font-size: 1.2rem;
+         }
+         .slide-portada .slide-image {
+            height: 200px;
+            width: 200px;
+         }
+
+        /* Estilo para referencias (texto más pequeño) */
+        .slide-referencias .slide-content {
+            flex: 1 1 100%; /* Ocupa todo el ancho */
+        }
+        .slide-referencias ul {
+            font-size: 0.85rem;
+            line-height: 1.5;
+            column-count: 2; /* Muestra referencias en dos columnas */
+            column-gap: 25px;
+        }
+        .slide-referencias li {
+            margin-bottom: 8px;
+        }
+        .slide-referencias .slide-image {
+            display: none; /* Oculta la imagen en la diapositiva de referencias */
+        }
+
+
+        /* --- Botones de Navegación --- */
+        .carousel-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: rgba(0, 74, 153, 0.7);
+            color: white;
+            border: none;
+            padding: 12px 18px;
+            cursor: pointer;
+            z-index: 100;
+            font-size: 1.5rem;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: background-color 0.3s ease;
+        }
+
+        .carousel-btn:hover {
+            background-color: rgba(0, 74, 153, 1);
+        }
+
+        .prev {
+            left: 20px;
+        }
+
+        .next {
+            right: 20px;
+        }
+
+        /* --- Animación de Fade --- */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        /* --- Responsividad --- */
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+            .carousel-container {
+                min-height: 500px;
+            }
+            .slide.active {
+                flex-direction: column-reverse; /* Imagen arriba, texto abajo */
+                align-items: center;
+            }
+            .slide-content h2 {
+                font-size: 1.8rem;
+            }
+            .slide-content li {
+                font-size: 1rem;
+            }
+            .slide-referencias ul {
+                column-count: 1; /* Una columna en móvil */
+            }
+            .carousel-btn {
+                top: auto;
+                bottom: 15px;
+                transform: none;
+            }
+            .prev {
+                left: 15px;
+            }
+            .next {
+                right: 15px;
+            }
+            .slide {
+                padding: 20px 20px 80px 20px; /* Más espacio abajo para botones */
+            }
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="carousel-container">
+
+        <div class="slide active slide-portada">
+            <div class="slide-content">
+                <h2>Actividad Integradora: Análisis de Incidente Crítico</h2>
+                <ul>
+                    <li><strong>Estudiante:</strong> [Tu Nombre Completo]</li>
+                    <li><strong>UCA:</strong> Escuelas y Modelos Teóricos de la Psicología</li>
+                    <li><strong>Docente:</strong> [Nombre de tu Docente]</li>
+                    <li><strong>Universidad:</strong> Universidad Nacional Rosario Castellanos</li>
+                    <li><strong>Fecha:</strong> [Fecha de Entrega]</li>
+                </ul>
+            </div>
+            <div class="slide-image">
+                Logo UNRC
+                (300x300 px)
+            </div>
+        </div>
+
+        <div class="slide">
+            <div class="slide-content">
+                <h2>Introducción</h2>
+                <ul>
+                    <li><strong>Propósito:</strong> Analizar Incidente Crítico de Israel.</li>
+                    <li>Usar tres fuerzas y modelo contemporáneo.</li>
+                    <li><strong>Organización:</strong></li>
+                    <li>1. Análisis: Psicoanálisis, Conductismo, Humanismo.</li>
+                    <li>2. Análisis: Terapia Sistémica.</li>
+                    <li>3. Definición de conceptos clave.</li>
+                    <li>4. Consideraciones y Conclusión.</li>
+                </ul>
+            </div>
+            <div class="slide-image">
+                Espacio para Imagen
+                (300x300 px)
+            </div>
+        </div>
+
+        <div class="slide">
+            <div class="slide-content">
+                <h2>Incidente Crítico: El Caso de Israel</h2>
+                <ul>
+                    <li><strong>Sujeto:</strong> Israel, 9 años.</li>
+                    <li><strong>Conducta:</strong> Agresividad severa contra padres y autoridad.</li>
+                    <li><strong>Antecedentes:</strong> Fracaso con pseudociencias (cristales, chakras).</li>
+                    <li><strong>Contexto:</strong> Madre ansiosa, padre distante.</li>
+                    <li><strong>Israel dice:</strong> "Es lo que siento..."</li>
+                    <li><strong>Israel desea:</strong> "Que alguien lo abrace..."</li>
+                </ul>
+            </div>
+            <div class="slide-image">
+                Espacio para Imagen
+                (300x300 px)
+            </div>
+        </div>
+
+        <div class="slide">
+            <div class="slide-content">
+                <h2>Fuerza 1: Psicoanálisis</h2>
+                <ul>
+                    <li><strong>Explicación:</strong> Agresión es síntoma de conflicto.</li>
+                    [cite_start]<li>Conflicto ubicado en el <strong>Inconsciente</strong>[cite: 2079].</li>
+                    [cite_start]<li>Está en <strong>Etapa de Latencia</strong> (9 años)[cite: 2446].</li>
+                    [cite_start]<li>Conducta sugiere <strong>Fijación</strong> en Etapa Fálica[cite: 2407].</li>
+                    [cite_start]<li>Agresión (padre, maestros) = <strong>Complejo de Edipo</strong> [cite: 2435-2436].</li>
+                    [cite_start]<li><strong>Ello</strong> (impulsos) domina a un <strong>Yo</strong> débil[cite: 2177, 2193].</li>
+                </ul>
+            </div>
+            <div class="slide-image">
+                Espacio para Imagen
+                (300x300 px)
+            </div>
+        </div>
+
+        <div class="slide">
+            <div class="slide-content">
+                <h2>Conceptos Psicoanalíticos</h2>
+                <ul>
+                    [cite_start]<li><strong>Inconsciente:</strong> Alberga deseos y recuerdos reprimidos[cite: 2080].</li>
+                    <li><strong>Ello (Id):</strong> Opera por Principio de Placer. [cite_start]Busca gratificación[cite: 2179].</li>
+                    [cite_start]<li><strong>Complejo de Edipo:</strong> Apego/rivalidad con padres [cite: 2435-2436].</li>
+                    [cite_start]<li><strong>Fijación:</strong> Energía (libido) vinculada a una etapa[cite: 2407].</li>
+                </ul>
+            </div>
+            <div class="slide-image">
+                Espacio para Imagen
+                (300x300 px)
+            </div>
+        </div>
+
+        <div class="slide">
+            <div class="slide-content">
+                <h2>Consideraciones (Psicoanálisis)</h2>
+                <ul>
+                    [cite_start]<li><strong>Método:</strong> Aplicar <strong>Método Psicoanalítico</strong>[cite: 2489].</li>
+                    <li><strong>Objetivo:</strong> Hacer consciente lo inconsciente.</li>
+                    [cite_start]<li><strong>Técnica:</strong> <strong>Asociación Libre</strong> (iniciada con plastilina) [cite: 2026-2027].</li>
+                    [cite_start]<li><strong>Relación:</strong> Analizar la <strong>Transferencia</strong> (mirada retadora)[cite: 2542].</li>
+                    [cite_start]<li><strong>Terapeuta:</strong> Manejar <strong>Contratransferencia</strong> (ansiedad sentida)[cite: 2560].</li>
+                </ul>
+            </div>
+            <div class="slide-image">
+                Espacio para Imagen
+                (300x300 px)
+            </div>
+        </div>
+
+        <div class="slide">
+            <div class="slide-content">
+                <h2>Fuerza 2: Conductismo</h2>
+                <ul>
+                    [cite_start]<li><strong>Explicación:</strong> Foco en conducta observable[cite: 142].</li>
+                    [cite_start]<li>Modelo: <strong>Condicionamiento Operante</strong>[cite: 499].</li>
+                    [cite_start]<li><strong>ED (Estímulo):</strong> Orden de padres ('recoge juguetes')[cite: 567].</li>
+                    [cite_start]<li><strong>RO (Respuesta):</strong> Israel golpea o es agresivo[cite: 568].</li>
+                    [cite_start]<li><strong>Consecuencia:</strong> "A veces... le damos el celular"[cite: 84].</li>
+                    <li><strong>Argumento:</strong> Agresión se mantiene por éxito.</li>
+                    [cite_start]<li>Recibe <strong>Reforzamiento Positivo</strong> (celular) [cite: 611-612].</li>
+                </ul>
+            </div>
+            <div class="slide-image">
+                Espacio para Imagen
+                (300x300 px)
+            </div>
+        </div>
+
+        <div class="slide">
+            <div class="slide-content">
+                <h2>Conceptos Conductistas</h2>
+                <ul>
+                    [cite_start]<li><strong>Condicionamiento Operante:</strong> Conducta se modifica por consecuencias [cite: 499, 594-597].</li>
+                    [cite_start]<li><strong>Reforzamiento Positivo:</strong> Se <strong>agrega</strong> estímulo (celular) [cite: 611-612].</li>
+                    [cite_start]<li><strong>Aumenta</strong> la probabilidad de la conducta[cite: 612].</li>
+                    [cite_start]<li><strong>Castigo:</strong> Evento que <strong>disminuye</strong> la conducta[cite: 637].</li>
+                    <li><strong>Extinción:</strong> Desaparición de respuesta no reforzada.</li>
+                </ul>
+            </div>
+            <div class="slide-image">
+                Espacio para Imagen
+                (300x300 px)
+            </div>
+        </div>
+
+        <div class="slide">
+            <div class="slide-content">
+                <h2>Consideraciones (Conductismo)</h2>
+                <ul>
+                    <li><strong>Objetivo:</strong> Modificar contingencias de refuerzo.</li>
+                    <li><strong>Técnica 1 (Extinción):</strong> No reforzar agresión (no celular).</li>
+                    [cite_start]<li><strong>Técnica 2 (Castigo Negativo):</strong> Retirar privilegio (celular)[cite: 645].</li>
+                    <li><strong>Técnica 3 (Refuerzo Positivo):</strong> Premiar conductas deseadas.</li>
+                    [cite_start]<li>Usar "aproximaciones sucesivas"[cite: 562].</li>
+                </ul>
+            </div>
+            <div class="slide-image">
+                Espacio para Imagen
+                (300x300 px)
+            </div>
+        </div>
+
+        <div class="slide">
+            <div class="slide-content">
+                <h2>Fuerza 3: Humanismo</h2>
+                <ul>
+                    [cite_start]<li><strong>Explicación:</strong> Foco en potencial humano[cite: 950].</li>
+                    [cite_start]<li>Agresión = Bloqueo de <strong>Tendencia Actualizante</strong>[cite: 1531].</li>
+                    [cite_start]<li><strong>(Maslow):</strong> Necesidades básicas insatisfechas[cite: 1071].</li>
+                    [cite_start]<li><strong>N. de Seguridad:</strong> Amenazada ("mi papá me grita")[cite: 1089].</li>
+                    [cite_start]<li><strong>N. de Amor:</strong> Insatisfecha ("quiere un abrazo")[cite: 1088, 1973].</li>
+                    [cite_start]<li><strong>(Rogers):</strong> Israel experimenta <strong>Incongruencia</strong>[cite: 1613].</li>
+                    <li>(Diferencia entre Self Real y experiencia).</li>
+                </ul>
+            </div>
+            <div class="slide-image">
+                Espacio para Imagen
+                (300x300 px)
+            </div>
+        </div>
+
+        <div class="slide">
+            <div class="slide-content">
+                <h2>Conceptos Humanistas</h2>
+                <ul>
+                    <li><strong>Jerarquía de Necesidades:</strong> (Maslow) Básicas primero. [cite_start]Luego Autorrealización[cite: 1079, 1095].</li>
+                    [cite_start]<li><strong>Tendencia Actualizante:</strong> (Rogers) Impulso innato para crecer[cite: 1531].</li>
+                    [cite_start]<li><strong>Aceptación Positiva Incondicional:</strong> Aceptar al cliente y sus sentimientos[cite: 1635].</li>
+                    [cite_start]<li><strong>Empatía:</strong> Sentir el mundo del consultante[cite: 1623].</li>
+                </ul>
+            </div>
+            <div class="slide-image">
+                Espacio para Imagen
+                (300x300 px)
+            </div>
+        </div>
+
+        <div class="slide">
+            <div class="slide-content">
+                <h2>Consideraciones (Humanismo)</h2>
+                <ul>
+                    [cite_start]<li><strong>Objetivo:</strong> Ayudar al individuo a crecer[cite: 1593].</li>
+                    [cite_start]<li><strong>Rol Terapeuta:</strong> Aplicar "actitudes básicas"[cite: 1620].</li>
+                    [cite_start]<li><strong>Técnica (Empatía):</strong> Validar experiencia ("Se parte...")[cite: 1623, 919].</li>
+                    [cite_start]<li><strong>Técnica (Aceptación):</strong> Ofrecer "espacio cálido"[cite: 1588].</li>
+                    <li>Permitir expresión de enojo (plastilina).</li>
+                    [cite_start]<li><strong>Enfoque:</strong> "Presente y experiencia inmediata"[cite: 1594].</li>
+                </ul>
+            </div>
+            <div class="slide-image">
+                Espacio para Imagen
+                (300x300 px)
+            </div>
+        </div>
+
+        <div class="slide">
+            <div class="slide-content">
+                <h2>Modelo: Terapia Sistémica</h2>
+                <ul>
+                    <li><strong>Explicación:</strong> Problema no está en Israel.</li>
+                    [cite_start]<li>Problema está en el <strong>sistema</strong> familiar[cite: 2858].</li>
+                    [cite_start]<li>Israel es el <strong>"Paciente Identificado"</strong> [cite: 3463-3464].</li>
+                    [cite_start]<li>Se observa <strong>Causalidad Circular</strong>[cite: 3441]:</li>
+                    <li>1. Padres distantes. 2. Israel agresivo.</li>
+                    <li>3. [cite_start]Agresión desvía atención de problema marital[cite: 3464].</li>
+                    [cite_start]<li>Agresión mantiene <strong>Homeostasis</strong> (equilibrio disfuncional)[cite: 3445].</li>
+                </ul>
+            </div>
+            <div class="slide-image">
+                Espacio para Imagen
+                (300x300 px)
+            </div>
+        </div>
+
+        <div class="slide">
+            <div class="slide-content">
+                <h2>Conceptos Sistémicos</h2>
+                <ul>
+                    <li><strong>Sistema:</strong> Familia. [cite_start]Un cambio afecta a todos[cite: 2859].</li>
+                    [cite_start]<li><strong>Paciente Identificado:</strong> Miembro que presenta el síntoma[cite: 3463].</li>
+                    <li><strong>Causalidad Circular:</strong> Patrones recursivos. [cite_start]Cada respuesta alimenta otra[cite: 3443].</li>
+                    <li><strong>Homeostasis:</strong> Sistema resiste cambio. [cite_start]Preserva equilibrio disfuncional[cite: 3445].</li>
+                </ul>
+            </div>
+            <div class="slide-image">
+                Espacio para Imagen
+                (300x300 px)
+            </div>
+        </div>
+
+        <div class="slide">
+            <div class="slide-content">
+                <h2>Consideraciones (Sistémica)</h2>
+                <ul>
+                    [cite_start]<li><strong>Enfoque:</strong> Intervención debe ser <strong>Terapia Familiar</strong>[cite: 3743].</li>
+                    <li><strong>Técnica 1:</strong> <strong>Genograma</strong>. [cite_start]Ver patrones transgeneracionales[cite: 3573].</li>
+                    [cite_start]<li><strong>Técnica 2:</strong> <strong>Preguntas Circulares</strong>[cite: 3581].</li>
+                    <li><strong>Técnica 3:</strong> <strong>Reencuadre (Reframing)</strong>. [cite_start]Reformular significado[cite: 3577].</li>
+                    <li>Ej. "Agresión de Israel une a la familia".</li>
+                    [cite_start]<li><strong>Objetivo:</strong> <strong>Cambio de Segundo Orden</strong> (modificar reglas)[cite: 3542].</li>
+                </ul>
+            </div>
+            <div class="slide-image">
+                Espacio para Imagen
+                (300x300 px)
+            </div>
+        </div>
+
+        <div class="slide">
+            <div class="slide-content">
+                <h2>¿Cuál es el modelo más pertinente?</h2>
+                <ul>
+                    <li><strong>Respuesta:</strong> La <strong>Terapia Sistémica</strong>.</li>
+                    <li><strong>Justificación:</strong></li>
+                    <li>Conductismo explica *cómo*, no *por qué*.</li>
+                    <li>Psicoanálisis y Humanismo ignoran dinámica familiar.</li>
+                    <li>El problema es de *interacción*.</li>
+                    [cite_start]<li>Israel es <strong>Paciente Identificado</strong>[cite: 3463].</li>
+                    [cite_start]<li>Sistema necesita síntoma para <strong>Homeostasis</strong>[cite: 3445].</li>
+                </ul>
+            </div>
+            <div class="slide-image">
+                Espacio para Imagen
+                (300x300 px)
+            </div>
+        </div>
+
+        <div class="slide">
+            <div class="slide-content">
+                <h2>Psicología Científica vs. Pseudociencia</h2>
+                <ul>
+                    [cite_start]<li><strong>¿Cómo explicarlo a los padres?</strong> [cite: 1987]</li>
+                    <li>1. <strong>Validar:</strong> "Entiendo su frustración".</li>
+                    <li>2. [cite_start]<strong>Diferenciar:</strong> "Cristales se basan en creencias"[cite: 75].</li>
+                    <li>3. [cite_start]<strong>Definir:</strong> "Psicología es ciencia. Usamos fundamentos sólidos"[cite: 56].</li>
+                    <li>4. [cite_start]<strong>Proceso:</strong> "Hago evaluación diagnóstica, no adivino"[cite: 118].</li>
+                    <li>5. [cite_start]<strong>Riesgo:</strong> "Pseudociencia empeoró el problema"[cite: 77].</li>
+                    [cite_start]<li>Mi ética es usar <strong>intervención basada en evidencia</strong>[cite: 121].</li>
+                </ul>
+            </div>
+            <div class="slide-image">
+                Espacio para Imagen
+                (300x300 px)
+            </div>
+        </div>
+
+        <div class="slide">
+            <div class="slide-content">
+                <h2>Conclusión: Reflexión del Aprendizaje</h2>
+                <ul>
+                    <li><strong>¿Qué aprendí?</strong> Un caso, múltiples interpretaciones.</li>
+                    <li>(Impulsos, refuerzos, potencial, sistema).</li>
+                    <li><strong>¿Qué aporta el marco teórico?</strong></li>
+                    [cite_start]<li>Modelos teóricos dan un mapa[cite: 2828].</li>
+                    <li>Permiten entender la *función* del síntoma.</li>
+                    [cite_start]<li><strong>¿Por qué contrastar pseudociencias?</strong> [cite: 56-57]</li>
+                    <li>Retrasan la atención real. Causan más daño.</li>
+                </ul>
+            </div>
+            <div class="slide-image">
+                Espacio para Imagen
+                (300x300 px)
+            </div>
+        </div>
+
+        <div class="slide slide-referencias">
+            <div class="slide-content">
+                <h2>Referencias</h2>
+                <ul>
+                    <li>American Psychological Association. (2020). *Guía Normas APA (7ª edición)*.</li>
+                    <li>Universidad Nacional Rosario Castellanos. (s.f.). *Módulo 1. Primera fuerza en psicología: psicoanálisis*. [Contenido Nuclear].</li>
+                    <li>Universidad Nacional Rosario Castellanos. (s.f.). *Módulo 2. Segunda fuerza en psicología: Conductismo*. [Contenido Nuclear].</li>
+                    <li>Universidad Nacional Rosario Castellanos. (s.f.). *Módulo 3. Tercera fuerza en psicología: Humanismo*. [Contenido Nuclear].</li>
+                    <li>Universidad Nacional Rosario Castellanos. (s.f.). *Módulo 4. Modelos en Psicología*. [Contenido Nuclear].</li>
+                    <li>Naranjo, C. (2019). *La vieja y novísima Gestalt. (Parte I. Teoría)*. Cuatro vientos.</li>
+                    <li>Oaklander, R. V. (2001). *Ventana a nuestro niños: terapia gestáltica para niños y adolescentes*. Editorial Cuatro vientos.</li>
+                    <li>Perls, F. (2022). *Terapia Gestalt. Teoría y práctica*. Terracota.</li>
+                     </ul>
+            </div>
+            <div class="slide-image">
+                </div>
+        </div>
+
+
+        <button class="carousel-btn prev" onclick="changeSlide(-1)">&laquo;</button>
+        <button class="carousel-btn next" onclick="changeSlide(1)">&raquo;</button>
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const totalSlides = slides.length;
+
+        /**
+         * Muestra la diapositiva en el índice dado.
+         * @param {number} index - El índice de la diapositiva a mostrar.
+         */
+        function showSlide(index) {
+            // Oculta todas las diapositivas
+            slides.forEach(slide => {
+                slide.classList.remove('active');
+            });
+
+            // Muestra la diapositiva seleccionada
+            slides[index].classList.add('active');
+        }
+
+        /**
+         * Cambia a la diapositiva siguiente o anterior.
+         * @param {number} direction - La dirección (1 para siguiente, -1 para anterior).
+         */
+        function changeSlide(direction) {
+            currentSlide += direction;
+
+            // Manejo de límites (loop)
+            if (currentSlide >= totalSlides) {
+                currentSlide = 0; // Vuelve al inicio
+            } else if (currentSlide < 0) {
+                currentSlide = totalSlides - 1; // Va al final
+            }
+
+            showSlide(currentSlide);
+        }
+
+        // Inicializar (aunque ya está hecho con la clase 'active' en el HTML)
+        // showSlide(currentSlide);
+    </script>
+
+</body>
+</html>
